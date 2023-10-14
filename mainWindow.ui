@@ -1016,55 +1016,7 @@ QScrollBar::right-arrow:horizontal {
                 </spacer>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <item>
-                  <spacer name="horizontalSpacer_56">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_25">
-                   <property name="font">
-                    <font>
-                     <pointsize>12</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Timer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLCDNumber" name="signalTimer">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Graph timer&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_57">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
+                <layout class="QHBoxLayout" name="horizontalLayout_3"/>
                </item>
               </layout>
              </item>
@@ -1273,27 +1225,6 @@ QScrollBar::right-arrow:horizontal {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="addColorBtn">
-                   <property name="font">
-                    <font>
-                     <pointsize>9</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;add your signal color&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="text">
-                    <string>OK</string>
-                   </property>
-                   <property name="icon">
-                    <iconset>
-                     <normaloff>icons/check.png</normaloff>icons/check.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <spacer name="horizontalSpacer_49">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -1418,7 +1349,7 @@ QScrollBar::right-arrow:horizontal {
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show the signal&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
-                    <string>Show</string>
+                    <string>Hide</string>
                    </property>
                    <property name="icon">
                     <iconset>
@@ -1513,7 +1444,7 @@ QScrollBar::right-arrow:horizontal {
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="link_unlink_btn">
+          <widget class="QPushButton" name="linkUnlinkBtn">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -2088,55 +2019,7 @@ QScrollBar::right-arrow:horizontal {
                 </spacer>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_16">
-                 <item>
-                  <spacer name="horizontalSpacer_59">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_30">
-                   <property name="font">
-                    <font>
-                     <pointsize>12</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Timer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLCDNumber" name="signalTimer2">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Graph timer&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_61">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
+                <layout class="QHBoxLayout" name="horizontalLayout_16"/>
                </item>
               </layout>
              </item>
@@ -2345,27 +2228,6 @@ QScrollBar::right-arrow:horizontal {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="addColorBtn2">
-                   <property name="font">
-                    <font>
-                     <pointsize>9</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;add your signal color&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="text">
-                    <string>OK</string>
-                   </property>
-                   <property name="icon">
-                    <iconset>
-                     <normaloff>icons/check.png</normaloff>icons/check.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <spacer name="horizontalSpacer_46">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -2490,7 +2352,7 @@ QScrollBar::right-arrow:horizontal {
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show the signal&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
-                    <string>Show</string>
+                    <string>Hide</string>
                    </property>
                    <property name="icon">
                     <iconset>

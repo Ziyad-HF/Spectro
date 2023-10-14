@@ -10,7 +10,7 @@ Monitoring vital signals is crucial in any ICU setting. "Spectro" is a desktop a
 ### Signal File Management
 
 - **Opening Signal Files:**
-  ![Opening Signal Files](/path/to/opening_signal_files_screenshot.png)
+  ![Opening Signal Files](asset/fi)
   In this screenshot, you can see how to browse your PC to open different signal files for analysis.
 
 ### Dual Graphs
@@ -43,4 +43,3 @@ Monitoring vital signals is crucial in any ICU setting. "Spectro" is a desktop a
 - [Amgad Atef](https://github.com/amg-eng)
 - [Mahmoud Mohamed](https://github.com/Mahmoudm007)
 
-![GIF](giphy.gif)

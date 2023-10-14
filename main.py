@@ -1,15 +1,59 @@
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QApplication, QInputDialog
+# from PyQt5 import QtCore
+# from pandas import *
+# import pyqtgraph.exporters
+from PyQt5.QtWidgets import QMainWindow, QInputDialog  # QApplication
 from PyQt5.uic import loadUiType
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Pt
-from pandas import *
 from classes import *
 import sys
-import pyqtgraph.exporters
 from os import listdir, path, remove
+from docx import Document
+from docx.shared import Inches
+from PIL import Image
+from docx2pdf import convert
 
 FORM_CLASS, _ = loadUiType(path.join(path.dirname(__file__), "mainWindow.ui"))
+
+
+def add_snapshots_to_report(paths, snapshots_signals, doc, number):
+    if len(paths) != 0:
+        # for loop to add graph two images
+        for imgPath, snapshotSignals in zip(paths, snapshots_signals):
+            doc.add_paragraph("\n")
+            doc.add_heading(f"Snapshot {number}", 3)
+            number += 1
+            img = Image.open(imgPath)
+            width, height = img.size
+            doc.paragraphs[-1].add_run().add_picture(imgPath, width=Inches(width / 140),
+                                                     height=Inches(height / 100))
+            doc.add_paragraph("Snapshot Statistics")
+            num_rows = 1 + len(snapshotSignals.keys())
+            num_cols = 6
+            table = doc.add_table(rows=num_rows, cols=num_cols)
+            table.style = 'Light Shading'
+            headings = ['Signal', 'Max', 'Min', 'Mean', 'STD', 'Duration']
+            for i, heading in enumerate(headings):
+                cell = table.cell(0, i)
+                cell.text = heading
+                cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                run = cell.paragraphs[0].runs[0]
+                run.bold = True
+                run.font.size = Pt(12)
+
+            row_index = 1
+            for signal in snapshotSignals.items():
+                signal_title, signal_stats = signal
+                data = [signal_title]
+                data.extend(signal_stats)
+                for col, text in enumerate(data):
+                    cell = table.cell(row_index, col)
+                    cell.text = str(text)
+                    cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                    cell.width = Inches(2.0)
+                    cell.height = Inches(1.0)
+                row_index += 1
+    # QApplication.processEvents()
 
 
 class MainApp(QMainWindow, FORM_CLASS):
@@ -18,48 +62,186 @@ class MainApp(QMainWindow, FORM_CLASS):
         super(MainApp, self).__init__(parent)
         QMainWindow.__init__(self, parent=None)
         self.setupUi(self)
-        self.graphicsView.setLimits(xMin=0)
-        self.graphicsView2.setLimits(xMin=0)
         self.setWindowTitle("Spectro")
         self.setWindowIcon(QtGui.QIcon('icons/logo.ico'))
+        self.graphicsView.setLimits(xMin=0)
+        self.graphicsView2.setLimits(xMin=0)
+        self.graphicsView.setMenuEnabled(False)
+        self.graphicsView2.setMenuEnabled(False)
+        self.moveDownBtn.setIcon(QtGui.QIcon(QtGui.QPixmap("icons/move down.png")))
+        self.moveUpBtn.setIcon(QtGui.QIcon(QtGui.QPixmap("icons/move up.png")))
+        self.linkUnlinkBtn.setIcon(QtGui.QIcon(QtGui.QPixmap("icons/link.png")))
+        self.linkStatus = False  # False for unlinked True for linked
         # creating the first graph
-        self.graphOne = graph(self.graphicsView, self, [self.addSignalBtn, self.pausePlayBtn,
+        self.graphOne = Graph(self.graphicsView, self, [self.addSignalBtn, self.pausePlayBtn,
                                                         self.zoomInBtn, self.zoomOutBtn,
                                                         self.resetBtn, self.clearBtn,
                                                         self.snapshotBtn, self.showHideBtn,
                                                         self.addTitleBtn, self.deleteSignalBtn,
                                                         self.speedUpBtn, self.speedDownBtn,
-                                                        self.syncUnsyncSignalsBtn, self.addColorBtn,
-                                                        self.signalComboBox, self.colorComboBox], 1)
+                                                        self.syncUnsyncSignalsBtn,
+                                                        self.signalComboBox, self.colorComboBox,
+                                                        self.addTitleLineEdit, self.originalViewBtn,
+                                                        self.defaultSpeedBtn, self.actionGenerate_PDF
+                                                        ], 1)
         # creating the second graph
-        self.graphTwo = graph(self.graphicsView2, self, [self.addSignalBtn2, self.pausePlayBtn2,
+        self.graphTwo = Graph(self.graphicsView2, self, [self.addSignalBtn2, self.pausePlayBtn2,
                                                          self.zoomInBtn2, self.zoomOutBtn2,
                                                          self.resetBtn2, self.clearBtn2,
                                                          self.snapshotBtn2, self.showHideBtn2,
                                                          self.addTitleBtn2, self.deleteSignalBtn2,
                                                          self.speedUpBtn2, self.speedDownBtn2,
-                                                         self.syncUnsyncSignalsBtn2, self.addColorBtn2,
-                                                         self.signalComboBox2, self.colorComboBox2], 2)
+                                                         self.syncUnsyncSignalsBtn2,
+                                                         self.signalComboBox2, self.colorComboBox2,
+                                                         self.addTitleLineEdit2, self.originalViewBtn2,
+                                                         self.defaultSpeedBtn2, self.actionGenerate_PDF
+                                                         ], 2)
         self.handle_buttons()
+        self.linkTimer = None  # ############################################
+        self.linkGraphSpeed = None  # #######################################
+        # QApplication.processEvents()
 
     def handle_buttons(self):
         self.actionGenerate_PDF.triggered.connect(self.export_to_pdf)
-        # self.syncUnsyncSignalsBtn.clicked.connect(self.capture_screenshot_save)
+        self.linkUnlinkBtn.clicked.connect(self.link_graphs)
+        self.moveUpBtn.clicked.connect(self.move_signal_up)
+        self.moveDownBtn.clicked.connect(self.move_signal_down)
+        self.actionGenerate_PDF.setEnabled(False)
+
+    def link_graphs(self):
+        if self.linkStatus:
+            self.linkUnlinkBtn.setIcon(QtGui.QIcon(QtGui.QPixmap("icons/link.png")))
+            self.linkUnlinkBtn.setText("link")
+            self.linkTimer.stop()
+            self.graphicsView2.setXLink(self.graphicsView2)
+            self.graphicsView2.setYLink(self.graphicsView2)
+            self.addSignalBtn2.disconnect()
+            self.addSignalBtn.disconnect()
+            self.pausePlayBtn.disconnect()
+            self.zoomInBtn.disconnect()
+            self.zoomOutBtn.disconnect()
+            self.resetBtn.disconnect()
+            self.speedUpBtn.disconnect()
+            self.speedDownBtn.disconnect()
+            self.graphOne.link(False)
+            self.graphTwo.link(False)
+            self.pausePlayBtn2.show()
+            self.zoomInBtn2.show()
+            self.zoomOutBtn2.show()
+            self.resetBtn2.show()
+            self.speedUpBtn2.show()
+            self.speedDownBtn2.show()
+            self.defaultSpeedBtn2.show()
+            self.syncUnsyncSignalsBtn.show()
+            self.syncUnsyncSignalsBtn2.show()
+            self.linkStatus = False
+            self.graphOne.timer.start()
+            self.graphTwo.timer.start()
+
+        else:
+            if self.graphOne.timer.isActive():
+                self.graphOne.timer.stop()
+            if self.graphTwo.timer.isActive():
+                self.graphTwo.timer.stop()
+            self.linkUnlinkBtn.setIcon(QtGui.QIcon(QtGui.QPixmap("icons/unlink.png")))
+            self.linkUnlinkBtn.setText("Unlink")
+            self.graphOne.link(True)
+            self.graphTwo.link(True)
+            self.linkTimer = QtCore.QTimer()
+            self.graphTwo.speedOfGraph = self.graphOne.speedOfGraph
+            self.linkGraphSpeed = self.graphOne.speedOfGraph
+            self.linkTimer.setInterval(self.linkGraphSpeed)
+            self.linkTimer.timeout.connect(self.link_plot)
+            self.graphTwo.plottingPoint = self.graphOne.plottingPoint
+            # hide buttons
+            self.pausePlayBtn2.hide()
+            self.zoomInBtn2.hide()
+            self.zoomOutBtn2.hide()
+            self.resetBtn2.hide()
+            self.speedUpBtn2.hide()
+            self.speedDownBtn2.hide()
+            self.defaultSpeedBtn2.hide()
+            self.syncUnsyncSignalsBtn.hide()
+            self.syncUnsyncSignalsBtn2.hide()
+            self.addSignalBtn2.clicked.connect(self.link_add_signal_graph2)
+            self.addSignalBtn.clicked.connect(self.link_add_signal_graph1)
+            self.pausePlayBtn.clicked.connect(self.link_pause_play_graph)
+            self.zoomInBtn.clicked.connect(self.link_zoom_in)
+            self.zoomOutBtn.clicked.connect(self.link_zoom_out)
+            self.resetBtn.clicked.connect(self.link_reset_graph)
+            self.speedUpBtn.clicked.connect(self.link_graph_speed_up)
+            self.speedDownBtn.clicked.connect(self.link_graph_speed_down)
+            self.graphicsView2.setXLink(self.graphicsView)
+            self.graphicsView2.setYLink(self.graphicsView)
+            self.linkStatus = True
+            self.linkTimer.start()
+
+    def link_pause_play_graph(self):
+        if self.linkTimer.isActive():
+            self.linkTimer.stop()
+        else:
+            self.linkTimer.start()
+
+    def link_add_signal_graph1(self):
+        self.linkTimer.stop()
+        self.graphOne.add_signal()
+        self.linkTimer.start()
+        # QApplication.processEvents()
+
+    def link_add_signal_graph2(self):
+        self.linkTimer.stop()
+        self.graphTwo.add_signal()
+        self.linkTimer.start()
+
+    def link_zoom_in(self):
+        self.graphOne.zoom_in()
+        self.graphTwo.zoom_in()
+
+    def link_zoom_out(self):
+        self.graphOne.zoom_out()
+        self.graphTwo.zoom_out()
+
+    def link_reset_graph(self):
+        self.graphOne.reset_graph()
+        self.graphTwo.reset_graph()
+        if not self.linkTimer.isActive():
+            self.linkTimer.start()
+
+    def link_graph_speed_up(self):
+        # self.graphOne.graph_speed_up() # ##############################################
+        # self.graphTwo.graph_speed_up() # ##############################################
+        if self.linkGraphSpeed == 1:
+            self.speedUpBtn.setEnabled(False)
+        else:
+            self.linkGraphSpeed -= 5
+            self.linkTimer.setInterval(self.linkGraphSpeed)
+
+    def link_graph_speed_down(self):
+        self.linkGraphSpeed += 5
+        self.speedUpBtn.setEnabled(True)
+        self.linkTimer.setInterval(self.linkGraphSpeed)
+        # self.graphOne.graph_speed_down()
+        # self.graphTwo.graph_speed_down()
+        # QApplication.processEvents()
+
+    def link_plot(self):
+        self.graphOne.plot()
+        self.graphTwo.plot()
 
     def clean(self):
-        graphOneFolderPath = "temp/imgs/graphOne"
-        graphTwoFolderPath = "temp/imgs/graphTwo"
+        graph_one_folder_path = "temp/imgs/graphOne"
+        graph_two_folder_path = "temp/imgs/graphTwo"
         # List all files in the folder
-        graphOnefiles = listdir(graphOneFolderPath)
-        graphTwofiles = listdir(graphTwoFolderPath)
+        graph_one_files = listdir(graph_one_folder_path)
+        graph_two_files = listdir(graph_two_folder_path)
 
-        for file in graphOnefiles:
-            file_path = path.join(graphOneFolderPath, file)
+        for file in graph_one_files:
+            file_path = path.join(graph_one_folder_path, file)
             # Check if the path is a file (not a subdirectory)
             if path.isfile(file_path):
                 remove(file_path)
-        for file in graphTwofiles:
-            file_path = path.join(graphTwoFolderPath, file)
+        for file in graph_two_files:
+            file_path = path.join(graph_two_folder_path, file)
             # Check if the path is a file (not a subdirectory)
             if path.isfile(file_path):
                 remove(file_path)  # Delete the file
@@ -68,14 +250,14 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.graphOne.imageNumber = 0
         self.graphTwo.snapshotsPaths.clear()
         self.graphTwo.imageNumber = 0
-        QApplication.processEvents() 
+        # QApplication.processEvents()
 
     def create_word(self):
         doc = Document()
-        signalDictGraphOne = self.graphOne.signalDictionary
-        signalDictGraphTwo = self.graphTwo.signalDictionary
-        graphOneSignals = list(signalDictGraphOne.values())
-        graphTwoSignals = list(signalDictGraphTwo.values())
+        signal_dict_graph_one = self.graphOne.signalDictionary
+        signal_dict_graph_two = self.graphTwo.signalDictionary
+        graph_one_signals = list(signal_dict_graph_one.values())
+        graph_two_signals = list(signal_dict_graph_two.values())
         doc.add_heading("Report of statistics and Snapshots", 0)
         doc.add_paragraph("")
 
@@ -83,8 +265,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         doc.add_paragraph("")
 
         # Define the number of rows and columns for the table
-        num_rows = len(graphOneSignals) + \
-            len(graphTwoSignals) + 1  # number of signal
+        num_rows = len(graph_one_signals) + len(graph_two_signals) + 1  # number of signal
         num_cols = 6
         # Add a table with the specified number of rows and columns
         table = doc.add_table(rows=num_rows, cols=num_cols)
@@ -104,10 +285,10 @@ class MainApp(QMainWindow, FORM_CLASS):
 
         # Add signals stats numbers
         data = []
-        for signal in graphOneSignals:
+        for signal in graph_one_signals:
             data.append([signal.title] + signal.stats)
 
-        for signal in graphTwoSignals:
+        for signal in graph_two_signals:
             data.append([signal.title] + signal.stats)
 
         for i, row_data in enumerate(data):
@@ -121,82 +302,54 @@ class MainApp(QMainWindow, FORM_CLASS):
         doc.add_paragraph("")
         if len(self.graphOne.snapshotsPaths) or len(self.graphTwo.snapshotsPaths) != 0:
             doc.add_heading("Here are Each snapshot and its statistics:\n")
-        number = 1
-        self.addSnapShotsToReport(
-            self.graphOne.snapshotsPaths, self.graphOne.snapshotStats, doc, number)
-        self.addSnapShotsToReport(
-            self.graphTwo.snapshotsPaths, self.graphTwo.snapshotStats, doc, number)
+        else:
+            doc.add_heading("No snapshots were taken", 1)
+        add_snapshots_to_report(self.graphOne.snapshotsPaths, self.graphOne.snapshotStats, doc, 1)
+        add_snapshots_to_report(self.graphTwo.snapshotsPaths, self.graphTwo.snapshotStats, doc,
+                                len(self.graphOne.snapshotsPaths)+1)
 
         report_name, ok = QInputDialog.getText(
             self, 'Name your report', 'Enter Report Name:')
 
-        report_path = None
+        # report_path = None
         if ok:
             report_path = f"outputs/{report_name}"
         else:
             report_path = "outputs/report"
+            report_name = "report"
 
-        while path.exists(path.join(report_path+".pdf")):
+        while path.exists(path.join(report_path + ".pdf")):
             report_path += "_"
             report_name += "_"
 
         doc.save(f"outputs/{report_name}.docx")
-
         QApplication.processEvents()
-
-    def addSnapShotsToReport(self, paths, snapshotsSignals, doc, number):
-        if len(paths) != 0:
-            # for loop to print graph two images
-            for imgPath, snapshotSignals in zip(paths, snapshotsSignals):
-                doc.add_paragraph("\n")
-                doc.add_heading(f"Snapshot {number}", 2)
-                number += 1
-                img = Image.open(imgPath)
-                width, height = img.size
-                doc.paragraphs[-1].add_run().add_picture(imgPath, width=Inches(width / 140),
-                                                         height=Inches(height / 100))
-                doc.add_paragraph("Snapshot Statistics")
-                num_rows = 1 + len(snapshotSignals.keys())
-                num_cols = 6
-                table = doc.add_table(rows=num_rows, cols=num_cols)
-                table.style = 'Light Shading'
-                headings = ['Signal', 'Max', 'Min', 'Mean', 'STD', 'Duration']
-                for i, heading in enumerate(headings):
-                    cell = table.cell(0, i)
-                    cell.text = heading
-                    cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-                    run = cell.paragraphs[0].runs[0]
-                    run.bold = True
-                    run.font.size = Pt(12)
-
-                rowIndex = 1
-                for signal in snapshotSignals.items():
-                    signalTitle, signalStats = signal
-                    data = [signalTitle]
-                    data.extend(signalStats)
-                    for col, text in enumerate(data):
-                        cell = table.cell(rowIndex, col)
-                        cell.text = str(text)
-                        cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-                        cell.width = Inches(2.0)
-                        cell.height = Inches(1.0)
-                    rowIndex += 1
+        return report_name
 
     def export_to_pdf(self):
-        self.create_word()
+        report_name = self.create_word()
         self.clean()
         # Converting word files to PDFs
         convert("outputs/")
-        QMessageBox.information(
-            self, "Saved", "You will find your report in the outputs")
+        QMessageBox.information(self, "Saved", f"You will find your report in the outputs with name {report_name}")
 
         for file in listdir("outputs/"):
             file_path = path.join("outputs/", file)
-
             # Check if the path is a file (not a subdirectory)
             if path.isfile(file_path) and file_path[-5:] == ".docx":
                 remove(file_path)
-        QApplication.processEvents()
+        # QApplication.processEvents()
+
+    def move_signal_up(self):
+        file_path, title = self.graphTwo.signalDictionary[self.signalComboBox2.currentText()].return_path()
+
+        self.graphOne.add_signal(file_path, title)
+        self.graphTwo.delete_signal(True)
+
+    def move_signal_down(self):
+        file_path, title = self.graphOne.signalDictionary[self.signalComboBox.currentText()].return_path()
+        self.graphTwo.add_signal(file_path, title)
+        self.graphOne.delete_signal(True)
 
 
 def main():
