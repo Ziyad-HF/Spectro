@@ -82,7 +82,8 @@ class MainApp(QMainWindow, FORM_CLASS):
                                                         self.syncUnsyncSignalsBtn,
                                                         self.signalComboBox, self.colorComboBox,
                                                         self.addTitleLineEdit, self.originalViewBtn,
-                                                        self.defaultSpeedBtn, self.actionGenerate_PDF
+                                                        self.defaultSpeedBtn, self.actionGenerate_PDF,
+                                                        self.moveDownBtn
                                                         ], 1)
         # creating the second graph
         self.graphTwo = Graph(self.graphicsView2, self, [self.addSignalBtn2, self.pausePlayBtn2,
@@ -94,11 +95,12 @@ class MainApp(QMainWindow, FORM_CLASS):
                                                          self.syncUnsyncSignalsBtn2,
                                                          self.signalComboBox2, self.colorComboBox2,
                                                          self.addTitleLineEdit2, self.originalViewBtn2,
-                                                         self.defaultSpeedBtn2, self.actionGenerate_PDF
+                                                         self.defaultSpeedBtn2, self.actionGenerate_PDF,
+                                                         self.moveUpBtn
                                                          ], 2)
         self.handle_buttons()
-        self.linkTimer = None  # ############################################
-        self.linkGraphSpeed = None  # #######################################
+        self.linkTimer = QtCore.QTimer()
+        self.linkGraphSpeed = None
         # QApplication.processEvents()
 
     def handle_buttons(self):
@@ -147,7 +149,6 @@ class MainApp(QMainWindow, FORM_CLASS):
             self.linkUnlinkBtn.setText("Unlink")
             self.graphOne.link(True)
             self.graphTwo.link(True)
-            self.linkTimer = QtCore.QTimer()
             self.graphTwo.speedOfGraph = self.graphOne.speedOfGraph
             self.linkGraphSpeed = self.graphOne.speedOfGraph
             self.linkTimer.setInterval(self.linkGraphSpeed)

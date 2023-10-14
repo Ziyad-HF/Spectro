@@ -54,17 +54,13 @@ class Graph:
         if self.signalDictionary:
             for i in range(len(self.buttons)):
                 if i != 0 and i != 12 and i != 18:
-                    if i < 18:
-                        self.buttons[i].setEnabled(True)
-                    else:
-                        break
+                    self.buttons[i].setEnabled(True)
+
         else:
             for i in range(len(self.buttons)):
                 if i != 0 and i != 12 and i != 18:
-                    if i < 18:
-                        self.buttons[i].setEnabled(False)
-                    else:
-                        break
+                    self.buttons[i].setEnabled(False)
+
         # QApplication.processEvents()
 
     def handle_buttons(self):
@@ -203,7 +199,7 @@ class Graph:
     def set_x_range(self):  # ######################################################
         if self.numberOfGraph == 1 or not self.linkStatus:
             if len(self.signalDictionary) > 0:
-                time_spent = self.plottingPoint * 0.008
+                time_spent = self.plottingPoint * 0.032
 
                 if time_spent >= 2.8:
                     self.graphPointer.setXRange(time_spent - 2.8, time_spent + 0.1, padding=0)
@@ -405,7 +401,7 @@ class Signal(object):
         self.startPoint = self.graphObjectPoint.plottingPoint
         if self.startPoint != 0:
             self.signalStatus[2] = 'unsync'
-            self.timeSpent = self.startPoint * 0.008
+            self.timeSpent = self.startPoint * 0.032
             x_column = self.data.columns.values.tolist()[0]
             self.data[x_column] = self.data[x_column] + self.timeSpent
             # self.signalStatus[2] = 'unsync'
@@ -436,7 +432,7 @@ class Signal(object):
                 self.graphObjectPoint.buttons[12].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/unsync.png")))
 
             else:
-                self.startPoint = int((self.timeSpent / 0.008))
+                self.startPoint = int((self.timeSpent / 0.032))
                 self.data[x_column] = self.data[x_column] + self.timeSpent
                 self.graphObjectPoint.buttons[12].setText("Sync")
                 self.graphObjectPoint.buttons[12].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/sync.png")))
