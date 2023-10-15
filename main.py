@@ -100,7 +100,7 @@ class MainApp(QMainWindow, FORM_CLASS):
                                                          ], 2)
         self.handle_buttons()
         self.linkTimer = QtCore.QTimer()
-        self.linkGraphSpeed = None
+        self.linkGraphSpeed = 21
         # QApplication.processEvents()
 
     def handle_buttons(self):
@@ -125,6 +125,7 @@ class MainApp(QMainWindow, FORM_CLASS):
             self.resetBtn.disconnect()
             self.speedUpBtn.disconnect()
             self.speedDownBtn.disconnect()
+            self.defaultSpeedBtn.disconnect()
             self.graphOne.link(False)
             self.graphTwo.link(False)
             self.pausePlayBtn2.show()
@@ -149,7 +150,7 @@ class MainApp(QMainWindow, FORM_CLASS):
             self.linkUnlinkBtn.setText("Unlink")
             self.graphOne.link(True)
             self.graphTwo.link(True)
-            self.graphTwo.speedOfGraph = self.graphOne.speedOfGraph
+            # self.graphTwo.speedOfGraph = self.graphOne.speedOfGraph
             self.linkGraphSpeed = self.graphOne.speedOfGraph
             self.linkTimer.setInterval(self.linkGraphSpeed)
             self.linkTimer.timeout.connect(self.link_plot)
@@ -172,6 +173,7 @@ class MainApp(QMainWindow, FORM_CLASS):
             self.resetBtn.clicked.connect(self.link_reset_graph)
             self.speedUpBtn.clicked.connect(self.link_graph_speed_up)
             self.speedDownBtn.clicked.connect(self.link_graph_speed_down)
+            self.defaultSpeedBtn.clicked.connect(self.link_default_speed)
             self.graphicsView2.setXLink(self.graphicsView)
             self.graphicsView2.setYLink(self.graphicsView)
             self.linkStatus = True
@@ -209,21 +211,30 @@ class MainApp(QMainWindow, FORM_CLASS):
             self.linkTimer.start()
 
     def link_graph_speed_up(self):
-        # self.graphOne.graph_speed_up() # ##############################################
-        # self.graphTwo.graph_speed_up() # ##############################################
-        if self.linkGraphSpeed == 1:
-            self.speedUpBtn.setEnabled(False)
-        else:
-            self.linkGraphSpeed -= 5
-            self.linkTimer.setInterval(self.linkGraphSpeed)
+        self.linkGraphSpeed -= 5
+        self.linkTimer.setInterval(self.linkGraphSpeed)
+        self.check_speed_in_range()
 
     def link_graph_speed_down(self):
         self.linkGraphSpeed += 5
-        self.speedUpBtn.setEnabled(True)
         self.linkTimer.setInterval(self.linkGraphSpeed)
-        # self.graphOne.graph_speed_down()
-        # self.graphTwo.graph_speed_down()
-        # QApplication.processEvents()
+        self.check_speed_in_range()
+
+    def link_default_speed(self):
+        self.linkGraphSpeed = 21
+        self.linkTimer.setInterval(self.linkGraphSpeed)
+        self.check_speed_in_range()
+
+    def check_speed_in_range(self):
+        if self.linkGraphSpeed > 5:
+            self.speedUpBtn.setEnabled(True)
+        else:
+            self.speedUpBtn.setEnabled(False)
+
+        if self.linkGraphSpeed < 100:
+            self.speedDownBtn.setEnabled(True)
+        else:
+            self.speedDownBtn.setEnabled(False)
 
     def link_plot(self):
         self.graphOne.plot()
@@ -307,7 +318,7 @@ class MainApp(QMainWindow, FORM_CLASS):
             doc.add_heading("No snapshots were taken", 1)
         add_snapshots_to_report(self.graphOne.snapshotsPaths, self.graphOne.snapshotStats, doc, 1)
         add_snapshots_to_report(self.graphTwo.snapshotsPaths, self.graphTwo.snapshotStats, doc,
-                                len(self.graphOne.snapshotsPaths)+1)
+                                len(self.graphOne.snapshotsPaths) + 1)
 
         report_name, ok = QInputDialog.getText(
             self, 'Name your report', 'Enter Report Name:')

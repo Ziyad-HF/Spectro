@@ -17,7 +17,7 @@ class Graph:
         self.graphPointer = graph_pointer
         self.numberOfGraph = number_of_graph
         self.window = window
-        self.speedOfGraph = 50
+        self.speedOfGraph = 21
         self.plottingPoint = 0
         self.imgNumber = 0
         self.graphPointer.addLegend(labelTextSize='9pt')
@@ -49,21 +49,19 @@ class Graph:
         self.buttons[17].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/default.png")))
         self.buttons[12].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/sync.png")))
 
-
     def disable_enable_buttons(self):
         if self.signalDictionary:
             for i in range(len(self.buttons)):
-                if i != 0 and i != 12 and i != 18:
+                if i != 0 and i != 18:
                     self.buttons[i].setEnabled(True)
 
         else:
             for i in range(len(self.buttons)):
-                if i != 0 and i != 12 and i != 18:
+                if i != 0 and i != 18:
                     self.buttons[i].setEnabled(False)
 
-        # QApplication.processEvents()
-
     def handle_buttons(self):
+        self.check_speed_in_range()
         self.buttons[0].clicked.connect(self.add_signal)
         self.buttons[1].clicked.connect(self.pause_play_graph)
         self.buttons[2].clicked.connect(self.zoom_in)
@@ -94,7 +92,7 @@ class Graph:
             self.timer.stop()
         if not file_path:
             file_path, _ = QFileDialog.getOpenFileName(self.window, "open csv file",
-                                                       "C:/Users/dell2/Downloads/bidmc_csv",
+                                                       "data/",
                                                        "CSV Files (*.csv)")
             if file_path != '':
                 signal_title = file_path.split("/")[-1][:-4]
@@ -172,31 +170,40 @@ class Graph:
         self.graphPointer.clear()
         self.signalDictionary.clear()
 
+    def check_speed_in_range(self):
+        if self.speedOfGraph > 5:
+            self.buttons[10].setEnabled(True)
+        else:
+            self.buttons[10].setEnabled(False)
+
+        if self.speedOfGraph < 100:
+            self.buttons[11].setEnabled(True)
+        else:
+            self.buttons[11].setEnabled(False)
+
     def graph_speed_up(self):
-        self.buttons[10].setEnabled(True)
         self.speedOfGraph -= 5
         self.timer.setInterval(self.speedOfGraph)
-        QApplication.processEvents()
-
+        self.check_speed_in_range()
 
     def graph_speed_down(self):
         self.speedOfGraph += 5
-        self.buttons[10].setEnabled(True)
         self.timer.setInterval(self.speedOfGraph)
-        QApplication.processEvents()
+        self.check_speed_in_range()
 
     def default_speed(self):
-        self.speedOfGraph = 20
+        self.speedOfGraph = 21
         self.buttons[10].setEnabled(True)
+        self.buttons[11].setEnabled(True)
         self.timer.setInterval(self.speedOfGraph)
 
-    def set_y_axis_range(self):  # ###################################################
+    def set_y_axis_range(self):
         y_min, y_max = min(self.yAxisMinOfSignals), max(self.yAxisMaxOfSignals)
         self.graphPointer.setYRange(y_min, y_max, padding=0)
         self.graphPointer.setLimits(yMin=2 * y_min, yMax=2 * y_max)
         QApplication.processEvents()
 
-    def set_x_range(self):  # ######################################################
+    def set_x_range(self):
         if self.numberOfGraph == 1 or not self.linkStatus:
             if len(self.signalDictionary) > 0:
                 time_spent = self.plottingPoint * 0.032
@@ -289,6 +296,8 @@ class Graph:
         y_min, y_max = min(self.yAxisMinOfSignals), max(self.yAxisMaxOfSignals)
         self.graphPointer.setYRange(y_min, y_max, padding=0)
         self.timer.start()
+        self.buttons[1].setText("play")
+        self.buttons[1].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/play.png")))
 
     def snap_shot_of_graph(self):
         exporter = pyqtgraph.exporters.ImageExporter(self.graphPointer.scene())
@@ -368,10 +377,10 @@ class Graph:
             self.buttons[4].clicked.disconnect(self.reset_graph)
             self.buttons[10].clicked.disconnect(self.graph_speed_up)
             self.buttons[11].clicked.disconnect(self.graph_speed_down)
+            self.buttons[17].clicked.disconnect(self.default_speed)
             self.buttons[12].clicked.connect(self.sync)
         else:
             self.handle_buttons()
-        # QApplication.processEvents()
 
     def sync(self):
         for signalToPlot in self.signalDictionary.values():
@@ -379,7 +388,6 @@ class Graph:
                 signalToPlot.sync_signal(not self.syncStatus)
                 signalToPlot.plotting_signal_curve(self.plottingPoint)
         self.syncStatus = not self.syncStatus
-        # QApplication.processEvents()
 
 
 # ------------------------------------------signal
@@ -468,7 +476,6 @@ class Signal(object):
             return True
 
     def plotting_signal_curve(self, plotting_point):
-        self.plottingPointSignal = plotting_point
         if self.check_status(plotting_point):
             self.signalCurve.setData(list(self.values[0].values())[:plotting_point - self.startPoint],
                                      list(self.values[1].values())[:plotting_point - self.startPoint],
@@ -495,29 +502,3 @@ class Signal(object):
         self.graphObjectPoint.yAxisMaxOfSignals.remove(max(list(self.values[1].values())))
         self.graphObjectPoint.yAxisMinOfSignals.remove(min(list(self.values[1].values())))
         self.graphPointer.plotItem.legend.removeItem(self.signalCurve)
-
-    def signal_move(self, graph_pointer, graph_object_point):
-        self.graphPointer = graph_pointer
-        self.graphObjectPoint = graph_object_point
-        if self.graphObjectPoint.timer.isActive():
-            self.graphObjectPoint.timer.stop()
-
-        number_of_the_signal = 0
-        signal_old_title = self.title  # ##############################################
-
-        while self.title in self.graphObjectPoint.signalDictionary.keys():
-            self.title += " " + str(number_of_the_signal)
-            number_of_the_signal += 1
-
-        self.graphObjectPoint.signalDictionary[self.title] = self
-        self.graphObjectPoint.buttons[13].addItem(self.title)
-
-        self.graphObjectPoint.disable_enable_buttons()
-        if self.graphObjectPoint.linkStatus:
-            self.graphObjectPoint.signalDictionary[self.title].sync_signal(True)
-        self.graphPointer.addItem(self.signalCurve)
-        self.graphObjectPoint.yAxisMaxOfSignals.append(max(list(self.values[1].values())))
-        self.graphObjectPoint.yAxisMinOfSignals.append(min(list(self.values[1].values())))
-        self.graphObjectPoint.plottingPoint = self.plottingPointSignal
-        if not self.graphObjectPoint.linkStatus:
-            self.graphObjectPoint.timer.start()
