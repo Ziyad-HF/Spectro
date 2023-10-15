@@ -1,6 +1,3 @@
-# from PyQt5 import QtCore
-# from pandas import *
-# import pyqtgraph.exporters
 from PyQt5.QtWidgets import QMainWindow, QInputDialog  # QApplication
 from PyQt5.uic import loadUiType
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
@@ -353,13 +350,12 @@ class MainApp(QMainWindow, FORM_CLASS):
         # QApplication.processEvents()
 
     def move_signal_up(self):
-        file_path, title = self.graphTwo.signalDictionary[self.signalComboBox2.currentText()].return_path()
-
+        file_path, title = self.graphTwo.signalDictionary[self.signalComboBox2.currentText()].return_path_title()
         self.graphOne.add_signal(file_path, title)
         self.graphTwo.delete_signal(True)
 
     def move_signal_down(self):
-        file_path, title = self.graphOne.signalDictionary[self.signalComboBox.currentText()].return_path()
+        file_path, title = self.graphOne.signalDictionary[self.signalComboBox.currentText()].return_path_title()
         self.graphTwo.add_signal(file_path, title)
         self.graphOne.delete_signal(True)
 

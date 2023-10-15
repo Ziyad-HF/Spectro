@@ -7,10 +7,9 @@ import pyqtgraph as pg
 from numpy import std
 
 
-# import uuid
-
-
 class Graph:
+    GraphList = []
+
     def __init__(self, graph_pointer, window, buttons, number_of_graph):
         self.linkStatus = False
         self.playing = True
@@ -18,20 +17,23 @@ class Graph:
         self.numberOfGraph = number_of_graph
         self.window = window
         self.speedOfGraph = 21
+        Graph.GraphList.append(self)
         self.plottingPoint = 0
+        # used in snapshot stats
         self.imgNumber = 0
+        self.snapshotsPaths = []
+        self.snapshotStats = []
+        # legend text in graph
         self.graphPointer.addLegend(labelTextSize='9pt')
         self.buttons = buttons
         self.yAxisMaxOfSignals = []
         self.yAxisMinOfSignals = []
         # self.firstValuesOfTime= []
-        self.snapshotsPaths = []
-        self.snapshotStats = []
         self.signalDictionary = {}
         self.timer = QtCore.QTimer()
         self.timer.setInterval(self.speedOfGraph)
         self.timer.timeout.connect(self.plot)
-        self.buttons[10].setEnabled(False)
+        # self.buttons[10].setEnabled(False)
         self.handle_buttons()
 
         self.syncStatus = False  # False for unsync True for sync
@@ -100,7 +102,8 @@ class Graph:
                 while signal_title in self.signalDictionary.keys():
                     signal_title += " " + str(number_of_the_signal)
                     number_of_the_signal += 1
-                self.signalDictionary[signal_title] = Signal(file_path, signal_title, self.graphPointer, self.window,
+                self.signalDictionary[signal_title] = Signal(file_path, signal_title, self.graphPointer,
+                                                             self.numberOfGraph, self.window,
                                                              self)
                 self.buttons[13].addItem(signal_title)
                 self.set_y_axis_range()
@@ -118,7 +121,8 @@ class Graph:
             while signal_title in self.signalDictionary.keys():
                 signal_title += " " + str(number_of_the_signal)
                 number_of_the_signal += 1
-            self.signalDictionary[signal_title] = Signal(file_path, signal_title, self.graphPointer, self.window, self)
+            self.signalDictionary[signal_title] = Signal(file_path, signal_title, self.graphPointer, self.numberOfGraph,
+                                                         self.window, self)
             self.buttons[13].addItem(signal_title)
             self.set_y_axis_range()
             self.disable_enable_buttons()
@@ -126,6 +130,7 @@ class Graph:
                 self.signalDictionary[signal_title].sync_signal(True)
             if not self.linkStatus:
                 self.timer.start()
+            self.disable_enable_buttons()
             self.buttons[18].setEnabled(True)
         # QApplication.processEvents()
 
@@ -147,12 +152,10 @@ class Graph:
 
     def plot(self):
         self.set_x_range()
-        i = 0
         for signalToPlot in self.signalDictionary.keys():
             if self.signalDictionary[signalToPlot].signalStatus[0] == 'shown' and \
                     self.signalDictionary[signalToPlot].signalStatus[1] == 'unfinished':
                 self.signalDictionary[signalToPlot].plotting_signal_curve(self.plottingPoint)
-                i += 1
 
         self.plottingPoint += 1
         QApplication.processEvents()
@@ -166,6 +169,7 @@ class Graph:
     def clear_graph(self):
         self.timer.stop()
         self.plottingPoint = 0
+        #signal combobox
         self.buttons[13].clear()
         self.graphPointer.clear()
         self.signalDictionary.clear()
@@ -206,14 +210,20 @@ class Graph:
     def set_x_range(self):
         if self.numberOfGraph == 1 or not self.linkStatus:
             if len(self.signalDictionary) > 0:
-                time_spent = self.plottingPoint * 0.032
+                time_spent = self.plottingPoint * 0.008
 
                 if time_spent >= 2.8:
                     self.graphPointer.setXRange(time_spent - 2.8, time_spent + 0.1, padding=0)
+                    self.graphPointer.setLimits(xMax=time_spent+0.1)
+
+
                 else:
                     self.graphPointer.setXRange(0, 3, padding=0)
+                    self.graphPointer.setLimits(xMax=3)
             else:
                 self.graphPointer.setXRange(0, 3, padding=0)
+                self.graphPointer.setLimits(xMax=3)
+
         QApplication.processEvents()
 
     def show_hide(self):
@@ -296,8 +306,8 @@ class Graph:
         y_min, y_max = min(self.yAxisMinOfSignals), max(self.yAxisMaxOfSignals)
         self.graphPointer.setYRange(y_min, y_max, padding=0)
         self.timer.start()
-        self.buttons[1].setText("play")
-        self.buttons[1].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/play.png")))
+        self.buttons[1].setText("pause")
+        self.buttons[1].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/pause.png")))
 
     def snap_shot_of_graph(self):
         exporter = pyqtgraph.exporters.ImageExporter(self.graphPointer.scene())
@@ -390,17 +400,16 @@ class Graph:
         self.syncStatus = not self.syncStatus
 
 
-# ------------------------------------------signal
-# class-------------------------------------------------------------------
+# ---------------------------------signal class-------------------------------------------------------#
 
 
 class Signal(object):
-    def __init__(self, file_path, signal_title, graph_pointer, window, graph_object_point):
+    def __init__(self, file_path, signal_title, graph_pointer, number_of_graph, window, graph_object_point):
         self.filePath = file_path
         self.title = signal_title
         self.color = "r"
         self.signalStatus = ['shown', 'unfinished', '']
-        self.signalCurve = pg.PlotDataItem(name=self.title)
+        self.signalCurve = myCurve(self.title, file_path, graph_pointer, number_of_graph, window, name=self.title)
         self.window = window
         self.graphPointer = graph_pointer
         self.graphPointer.addItem(self.signalCurve)
@@ -409,11 +418,9 @@ class Signal(object):
         self.startPoint = self.graphObjectPoint.plottingPoint
         if self.startPoint != 0:
             self.signalStatus[2] = 'unsync'
-            self.timeSpent = self.startPoint * 0.032
+            self.timeSpent = self.startPoint * 0.008
             x_column = self.data.columns.values.tolist()[0]
             self.data[x_column] = self.data[x_column] + self.timeSpent
-            # self.signalStatus[2] = 'unsync'
-
         else:
             self.timeSpent = 0
             self.signalStatus[2] = 'sync'
@@ -421,13 +428,11 @@ class Signal(object):
         self.values = list(dict_data.values())
         self.graphObjectPoint.yAxisMaxOfSignals.append(max(list(self.values[1].values())))
         self.graphObjectPoint.yAxisMinOfSignals.append(min(list(self.values[1].values())))
-        # self.graphObjectPoint.firstValuesOfTime.append((list(self.values[0].values())[1]))
         self.graphObjectPoint.set_y_axis_range()
         self.stats = []
         self.calc_stats()
-        # QApplication.processEvents()
 
-    def return_path(self):
+    def return_path_title(self):
         return self.filePath, self.title
 
     def sync_signal(self, sync_status):
@@ -438,9 +443,8 @@ class Signal(object):
                 self.data[x_column] = self.data[x_column] - self.timeSpent
                 self.graphObjectPoint.buttons[12].setText("Unsync")
                 self.graphObjectPoint.buttons[12].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/unsync.png")))
-
             else:
-                self.startPoint = int((self.timeSpent / 0.032))
+                self.startPoint = int((self.timeSpent / 0.008))
                 self.data[x_column] = self.data[x_column] + self.timeSpent
                 self.graphObjectPoint.buttons[12].setText("Sync")
                 self.graphObjectPoint.buttons[12].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/sync.png")))
@@ -494,7 +498,7 @@ class Signal(object):
         self.stats.append(min(y_values))
         self.stats.append(round(std(y_values), 4))
         self.stats.append(round(sum(y_values) / len(y_values), 4))
-        self.stats.append(round(x_values[-1] - x_values[0]))
+        self.stats.append(round(x_values[-1] - x_values[0],4))
         QApplication.processEvents()
 
     def delete_signal_signals(self):
@@ -502,3 +506,55 @@ class Signal(object):
         self.graphObjectPoint.yAxisMaxOfSignals.remove(max(list(self.values[1].values())))
         self.graphObjectPoint.yAxisMinOfSignals.remove(min(list(self.values[1].values())))
         self.graphPointer.plotItem.legend.removeItem(self.signalCurve)
+
+
+class myCurve(pg.PlotCurveItem):
+
+    def __init__(self, SignalTitle, filePath, graphPointer, graphNumber, window, *args, **kargs):
+        pg.PlotCurveItem.__init__(self, *args, **kargs)
+        self.signalTitle = SignalTitle
+        self.filePath = filePath
+        self.graphPointer = graphPointer
+        self.window = window
+        self.graphNum = graphNumber
+
+    def mouseDragEvent(self, event):
+        if event.isFinish():
+            position = list(event.pos())
+            boundaries = self.graphPointer.viewRange()  # to get the boundaries of the graph
+            # to get the boundaries of the graph
+            xmin, xmax, ymin, ymax = boundaries[0][0], boundaries[0][1], boundaries[1][0], boundaries[1][1]
+            totalLenOfY = abs(ymax) + abs(ymin)
+            YperLen = totalLenOfY / 5
+            upperLimit = 0
+            lowerLimit = 0
+
+            if self.graphNum == 1:
+                if int(self.window.windowState()) == 2:
+                    upperLimit = ymin - 3 * YperLen
+                    lowerLimit = upperLimit - totalLenOfY
+                elif int(self.window.windowState()) == 0:
+                    upperLimit = ymin - 3.8 * YperLen
+                    lowerLimit = upperLimit - totalLenOfY
+                if xmin < position[0] < xmax and lowerLimit < position[1] < upperLimit:
+                    Graph.GraphList[1].add_signal(self.filePath, self.signalTitle)
+                    Graph.GraphList[1].buttons[1].setText("pause")
+                    Graph.GraphList[1].buttons[1].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/pause.png")))
+                    Graph.GraphList[0].delete_signal(True)
+
+            elif self.graphNum == 2:
+                if int(self.window.windowState()) == 2:
+                    lowerLimit = ymax + 3 * YperLen
+                    upperLimit = lowerLimit + totalLenOfY
+                elif int(self.window.windowState()) == 0:
+                    lowerLimit = ymax + 3.8 * YperLen
+                    upperLimit = lowerLimit + totalLenOfY
+                if xmin < position[0] < xmax and lowerLimit < position[1] < upperLimit:
+                    Graph.GraphList[0].add_signal(self.filePath, self.signalTitle)
+                    Graph.GraphList[0].buttons[1].setText("pause")
+                    Graph.GraphList[0].buttons[1].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/pause.png")))
+                    Graph.GraphList[1].delete_signal(True)
+
+    def hoverEvent(self, event):
+        if not event.isExit():
+            event.acceptDrags(pg.QtCore.Qt.LeftButton)
