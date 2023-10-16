@@ -1,10 +1,12 @@
+
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph.exporters
 from pandas import read_csv
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication, QColorDialog
 import pyqtgraph as pg
 from numpy import std
+from random import choice
 
 
 class Graph:
@@ -41,15 +43,20 @@ class Graph:
         self.disable_enable_buttons()
         self.buttons[0].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/add.png")))
         self.buttons[1].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/pause.png")))
+        self.buttons[2].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/zoom-in.png")))
+        self.buttons[3].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/zoom-out.png")))
         self.buttons[4].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/reset.png")))
         self.buttons[5].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/clear.png")))
         self.buttons[6].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/snapshot.png")))
         self.buttons[7].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/hide.png")))
         self.buttons[10].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/speed up.png")))
         self.buttons[11].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/slow down.png")))
+        self.buttons[8].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/ok.png")))
+        self.buttons[14].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/color.png")))
         self.buttons[16].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/original view.png")))
         self.buttons[17].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/default.png")))
         self.buttons[12].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/sync.png")))
+        self.buttons[9].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/delete.png")))
 
     def disable_enable_buttons(self):
         if self.signalDictionary:
@@ -79,16 +86,11 @@ class Graph:
         self.buttons[12].clicked.connect(self.sync)
         self.buttons[16].clicked.connect(self.reset_original_view)
         # self.buttons[17].clicked.connect(self.move_signal_to_other_graph)
-        self.buttons[14].currentIndexChanged.connect(self.change_signal_color)
-        self.buttons[14].addItem("Red")
-        self.buttons[14].addItem("Green")
-        self.buttons[14].addItem("Blue")
-        self.buttons[14].addItem("Brown")
-        self.buttons[14].addItem("Pink")
+        self.buttons[14].clicked.connect(self.change_signal_color)
         self.buttons[17].clicked.connect(self.default_speed)
         # QApplication.processEvents()
 
-    def add_signal(self, file_path="", signal_title=""):
+    def add_signal(self, file_path="", signal_title="",color=""):
 
         if self.timer.isActive():
             self.timer.stop()
@@ -122,7 +124,7 @@ class Graph:
                 signal_title += " " + str(number_of_the_signal)
                 number_of_the_signal += 1
             self.signalDictionary[signal_title] = Signal(file_path, signal_title, self.graphPointer, self.numberOfGraph,
-                                                         self.window, self)
+                                                         self.window, self,color)
             self.buttons[13].addItem(signal_title)
             self.set_y_axis_range()
             self.disable_enable_buttons()
@@ -214,15 +216,12 @@ class Graph:
 
                 if time_spent >= 2.8:
                     self.graphPointer.setXRange(time_spent - 2.8, time_spent + 0.1, padding=0)
-                    self.graphPointer.setLimits(xMax=time_spent+0.1)
 
 
                 else:
                     self.graphPointer.setXRange(0, 3, padding=0)
-                    self.graphPointer.setLimits(xMax=3)
             else:
                 self.graphPointer.setXRange(0, 3, padding=0)
-                self.graphPointer.setLimits(xMax=3)
 
         QApplication.processEvents()
 
@@ -259,10 +258,16 @@ class Graph:
             self.buttons[15].setText("")
 
     def change_signal_color(self):
-        chosen_color = self.buttons[14].currentText()
-        chosen_signal = self.signalDictionary[self.buttons[13].currentText()]
-        chosen_signal.change_color(chosen_color)
-        # QApplication.processEvents()
+        dialog = QColorDialog()
+        dialog.setOption(QColorDialog.ShowAlphaChannel, on=True)
+        color = dialog.getColor()
+        if color.isValid():
+            selected_signal = self.buttons[13].currentText()
+
+            if selected_signal in self.signalDictionary:
+
+                self.signalDictionary[selected_signal].color = color.name()
+                self.signalDictionary[selected_signal].signalCurve.setPen(color)
 
     def delete_signal(self, move_flag=False):
         chosen_signal_key = self.buttons[13].currentText()
@@ -331,9 +336,9 @@ class Graph:
                         if xPoint > x_max:
                             break
 
-                    stats = [max(list_for_stat[1]), min(list_for_stat[1]), round(std((list_for_stat[1])), 4),
-                             round(sum((list_for_stat[1])) / len((list_for_stat[1])), 4),
-                             round(list_for_stat[0][-1] - (list_for_stat[0][0]), 4)]
+                    stats = [max(list_for_stat[1]), min(list_for_stat[1]), round(std((list_for_stat[1])), 2),
+                             round(sum((list_for_stat[1])) / len((list_for_stat[1])), 2),
+                             round(list_for_stat[0][-1] - (list_for_stat[0][0]), 2)]
 
                     list_for_stat[0].clear()
                     list_for_stat[1].clear()
@@ -359,9 +364,9 @@ class Graph:
                         if xPoint > x_max:
                             break
 
-                    stats = [max(list_for_stat[1]), min(list_for_stat[1]), round(std((list_for_stat[1])), 4),
-                             round(sum((list_for_stat[1])) / len((list_for_stat[1])), 4),
-                             round(list_for_stat[0][-1] - (list_for_stat[0][0]), 4)]
+                    stats = [max(list_for_stat[1]), min(list_for_stat[1]), round(std((list_for_stat[1])), 2),
+                             round(sum((list_for_stat[1])) / len((list_for_stat[1])), 2),
+                             round(list_for_stat[0][-1] - (list_for_stat[0][0]), 2)]
 
                     list_for_stat[0].clear()
                     list_for_stat[1].clear()
@@ -404,14 +409,17 @@ class Graph:
 
 
 class Signal(object):
-    def __init__(self, file_path, signal_title, graph_pointer, number_of_graph, window, graph_object_point):
+    def __init__(self, file_path, signal_title, graph_pointer, number_of_graph, window, graph_object_point,color= ""):
         self.filePath = file_path
         self.title = signal_title
-        self.color = "r"
-        self.signalStatus = ['shown', 'unfinished', '']
-        self.signalCurve = myCurve(self.title, file_path, graph_pointer, number_of_graph, window, name=self.title)
-        self.window = window
         self.graphPointer = graph_pointer
+        if color:
+            self.color = color
+        else:
+            self.color = choice(['r', 'g', 'b', 'c', 'm', 'y', 'w'])
+        self.signalStatus = ['shown', 'unfinished', '']
+        self.signalCurve = myCurve(self.title, file_path, graph_pointer, number_of_graph, window,self.color, name=self.title)
+        self.window = window
         self.graphPointer.addItem(self.signalCurve)
         self.data = read_csv(file_path)
         self.graphObjectPoint = graph_object_point
@@ -433,7 +441,7 @@ class Signal(object):
         self.calc_stats()
 
     def return_path_title(self):
-        return self.filePath, self.title
+        return self.filePath, self.title,self.color
 
     def sync_signal(self, sync_status):
         x_column = self.data.columns.values.tolist()[0]
@@ -496,9 +504,9 @@ class Signal(object):
         y_values = list(self.values[1].values())
         self.stats.append(max(y_values))
         self.stats.append(min(y_values))
-        self.stats.append(round(std(y_values), 4))
-        self.stats.append(round(sum(y_values) / len(y_values), 4))
-        self.stats.append(round(x_values[-1] - x_values[0],4))
+        self.stats.append(round(std(y_values), 2))
+        self.stats.append(round(sum(y_values) / len(y_values), 2))
+        self.stats.append(round(x_values[-1] - x_values[0], 2))
         QApplication.processEvents()
 
     def delete_signal_signals(self):
@@ -510,16 +518,27 @@ class Signal(object):
 
 class myCurve(pg.PlotCurveItem):
 
-    def __init__(self, SignalTitle, filePath, graphPointer, graphNumber, window, *args, **kargs):
+    def __init__(self, SignalTitle, filePath, graphPointer, graphNumber, window,color, *args, **kargs):
         pg.PlotCurveItem.__init__(self, *args, **kargs)
         self.signalTitle = SignalTitle
         self.filePath = filePath
         self.graphPointer = graphPointer
         self.window = window
         self.graphNum = graphNumber
+        self.color = color
+        self.setAcceptHoverEvents(True)
+    def hoverEnterEvent(self, event):
+        # This method is called when the mouse enters the widget
+        QApplication.setOverrideCursor(QtCore.Qt.OpenHandCursor)
+    def hoverLeaveEvent(self, event):
+        # This method is called when the mouse leaves the widget
+        QApplication.setOverrideCursor(QtCore.Qt.ArrowCursor)
 
     def mouseDragEvent(self, event):
-        if event.isFinish():
+        if event.isStart():
+            QApplication.setOverrideCursor(QtCore.Qt.ClosedHandCursor)
+        elif event.isFinish():
+            QApplication.setOverrideCursor(QtCore.Qt.ArrowCursor)
             position = list(event.pos())
             boundaries = self.graphPointer.viewRange()  # to get the boundaries of the graph
             # to get the boundaries of the graph
@@ -537,7 +556,7 @@ class myCurve(pg.PlotCurveItem):
                     upperLimit = ymin - 3.8 * YperLen
                     lowerLimit = upperLimit - totalLenOfY
                 if xmin < position[0] < xmax and lowerLimit < position[1] < upperLimit:
-                    Graph.GraphList[1].add_signal(self.filePath, self.signalTitle)
+                    Graph.GraphList[1].add_signal(self.filePath, self.signalTitle,self.color)
                     Graph.GraphList[1].buttons[1].setText("pause")
                     Graph.GraphList[1].buttons[1].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/pause.png")))
                     Graph.GraphList[0].delete_signal(True)
@@ -550,11 +569,11 @@ class myCurve(pg.PlotCurveItem):
                     lowerLimit = ymax + 3.8 * YperLen
                     upperLimit = lowerLimit + totalLenOfY
                 if xmin < position[0] < xmax and lowerLimit < position[1] < upperLimit:
-                    Graph.GraphList[0].add_signal(self.filePath, self.signalTitle)
+                    Graph.GraphList[0].add_signal(self.filePath, self.signalTitle,self.color)
                     Graph.GraphList[0].buttons[1].setText("pause")
                     Graph.GraphList[0].buttons[1].setIcon(QtGui.QIcon(QtGui.QPixmap("icons/pause.png")))
                     Graph.GraphList[1].delete_signal(True)
 
     def hoverEvent(self, event):
         if not event.isExit():
-            event.acceptDrags(pg.QtCore.Qt.LeftButton)
+            event.acceptDrags(QtCore.Qt.LeftButton)

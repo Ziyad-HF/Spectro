@@ -22,8 +22,8 @@ def add_snapshots_to_report(paths, snapshots_signals, doc, number):
             number += 1
             img = Image.open(imgPath)
             width, height = img.size
-            doc.paragraphs[-1].add_run().add_picture(imgPath, width=Inches(width / 140),
-                                                     height=Inches(height / 100))
+            doc.paragraphs[-1].add_run().add_picture(imgPath, width=Inches(7),
+                                                     height=Inches(height/100))
             doc.add_paragraph("Snapshot Statistics")
             num_rows = 1 + len(snapshotSignals.keys())
             num_cols = 6
@@ -77,7 +77,7 @@ class MainApp(QMainWindow, FORM_CLASS):
                                                         self.addTitleBtn, self.deleteSignalBtn,
                                                         self.speedUpBtn, self.speedDownBtn,
                                                         self.syncUnsyncSignalsBtn,
-                                                        self.signalComboBox, self.colorComboBox,
+                                                        self.signalComboBox, self.colorBtn,
                                                         self.addTitleLineEdit, self.originalViewBtn,
                                                         self.defaultSpeedBtn, self.actionGenerate_PDF,
                                                         self.moveDownBtn
@@ -90,7 +90,7 @@ class MainApp(QMainWindow, FORM_CLASS):
                                                          self.addTitleBtn2, self.deleteSignalBtn2,
                                                          self.speedUpBtn2, self.speedDownBtn2,
                                                          self.syncUnsyncSignalsBtn2,
-                                                         self.signalComboBox2, self.colorComboBox2,
+                                                         self.signalComboBox2, self.colorBtn2,
                                                          self.addTitleLineEdit2, self.originalViewBtn2,
                                                          self.defaultSpeedBtn2, self.actionGenerate_PDF,
                                                          self.moveUpBtn
@@ -98,7 +98,6 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.handle_buttons()
         self.linkTimer = QtCore.QTimer()
         self.linkGraphSpeed = 21
-        # QApplication.processEvents()
 
     def handle_buttons(self):
         self.actionGenerate_PDF.triggered.connect(self.export_to_pdf)
@@ -147,7 +146,7 @@ class MainApp(QMainWindow, FORM_CLASS):
             self.linkUnlinkBtn.setText("Unlink")
             self.graphOne.link(True)
             self.graphTwo.link(True)
-            # self.graphTwo.speedOfGraph = self.graphOne.speedOfGraph
+            self.graphTwo.speedOfGraph = self.graphOne.speedOfGraph
             self.linkGraphSpeed = self.graphOne.speedOfGraph
             self.linkTimer.setInterval(self.linkGraphSpeed)
             self.linkTimer.timeout.connect(self.link_plot)
@@ -178,9 +177,14 @@ class MainApp(QMainWindow, FORM_CLASS):
 
     def link_pause_play_graph(self):
         if self.linkTimer.isActive():
+            self.pausePlayBtn.setText("Play")
+            self.pausePlayBtn.setIcon(QtGui.QIcon(QtGui.QPixmap("icons/play.png")))
             self.linkTimer.stop()
         else:
+            self.pausePlayBtn.setText("Pause")
+            self.pausePlayBtn.setIcon(QtGui.QIcon(QtGui.QPixmap("icons/pause.png")))
             self.linkTimer.start()
+
 
     def link_add_signal_graph1(self):
         self.linkTimer.stop()
@@ -259,10 +263,13 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.graphOne.imageNumber = 0
         self.graphTwo.snapshotsPaths.clear()
         self.graphTwo.imageNumber = 0
-        # QApplication.processEvents()
 
     def create_word(self):
         doc = Document()
+        # remove doc padding and margins
+        doc.sections[0].left_margin = Inches(0.8)
+        doc.sections[0].right_margin = Inches(0.8)
+        doc.sections[0].top_margin = Inches(0.8)
         signal_dict_graph_one = self.graphOne.signalDictionary
         signal_dict_graph_two = self.graphTwo.signalDictionary
         graph_one_signals = list(signal_dict_graph_one.values())
@@ -311,52 +318,33 @@ class MainApp(QMainWindow, FORM_CLASS):
         doc.add_paragraph("")
         if len(self.graphOne.snapshotsPaths) or len(self.graphTwo.snapshotsPaths) != 0:
             doc.add_heading("Here are Each snapshot and its statistics:\n")
-        else:
+        else:``
             doc.add_heading("No snapshots were taken", 1)
         add_snapshots_to_report(self.graphOne.snapshotsPaths, self.graphOne.snapshotStats, doc, 1)
         add_snapshots_to_report(self.graphTwo.snapshotsPaths, self.graphTwo.snapshotStats, doc,
                                 len(self.graphOne.snapshotsPaths) + 1)
 
-        report_name, ok = QInputDialog.getText(
-            self, 'Name your report', 'Enter Report Name:')
-
-        # report_path = None
-        if ok:
-            report_path = f"outputs/{report_name}"
-        else:
-            report_path = "outputs/report"
-            report_name = "report"
-
-        while path.exists(path.join(report_path + ".pdf")):
-            report_path += "_"
-            report_name += "_"
-
-        doc.save(f"outputs/{report_name}.docx")
-        QApplication.processEvents()
-        return report_name
+        save_path = QFileDialog.getSaveFileName(self, 'Save File', "Report", "PDf Files (*.pdf)")[0]
+        print(save_path)
+        doc.save(f"{save_path}.docx")
+        return f"{save_path}.docx"
 
     def export_to_pdf(self):
-        report_name = self.create_word()
-        self.clean()
+        save_path = self.create_word()
         # Converting word files to PDFs
-        convert("outputs/")
-        QMessageBox.information(self, "Saved", f"You will find your report in the outputs with name {report_name}")
-
-        for file in listdir("outputs/"):
-            file_path = path.join("outputs/", file)
-            # Check if the path is a file (not a subdirectory)
-            if path.isfile(file_path) and file_path[-5:] == ".docx":
-                remove(file_path)
-        # QApplication.processEvents()
+        convert(save_path)
+        remove(save_path)
+        self.clean()
+        QMessageBox.information(self, "Saved", "Report saved successfully")
 
     def move_signal_up(self):
-        file_path, title = self.graphTwo.signalDictionary[self.signalComboBox2.currentText()].return_path_title()
-        self.graphOne.add_signal(file_path, title)
+        file_path, title,color = self.graphTwo.signalDictionary[self.signalComboBox2.currentText()].return_path_title()
+        self.graphOne.add_signal(file_path, title,color)
         self.graphTwo.delete_signal(True)
 
     def move_signal_down(self):
-        file_path, title = self.graphOne.signalDictionary[self.signalComboBox.currentText()].return_path_title()
-        self.graphTwo.add_signal(file_path, title)
+        file_path, title,color = self.graphOne.signalDictionary[self.signalComboBox.currentText()].return_path_title()
+        self.graphTwo.add_signal(file_path, title,color)
         self.graphOne.delete_signal(True)
 
 

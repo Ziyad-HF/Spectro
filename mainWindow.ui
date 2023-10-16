@@ -38,7 +38,7 @@ QPushButton, QToolButton, QCommandLinkButton{
     border-radius: 8px;
     color: #616161;
     font-weight: bold;
-font-size:9;
+font-size:112;
     background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #fbfdfd, stop:0.5 #ffffff, stop:1 #fbfdfd);
 }
 QPushButton::default, QToolButton::default, QCommandLinkButton::default{
@@ -500,7 +500,7 @@ QScrollBar::right-arrow:horizontal {
                </font>
               </property>
               <property name="title">
-               <string>Graph_1</string>
+               <string>Viewer 1</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
                <item>
@@ -520,9 +520,15 @@ QScrollBar::right-arrow:horizontal {
              <layout class="QHBoxLayout" name="horizontalLayout_41">
               <item>
                <widget class="QPushButton" name="addSignalBtn">
+                <property name="minimumSize">
+                 <size>
+                  <width>140</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -532,28 +538,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/plus.png</normaloff>icons/plus.png</iconset>
+                  <normaloff>../graph/icons/plus.png</normaloff>../graph/icons/plus.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_27">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="pausePlayBtn">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pausePlayBtn">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -566,28 +565,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/pause (1).png</normaloff>icons/pause (1).png</iconset>
+                  <normaloff>../graph/icons/pause (1).png</normaloff>../graph/icons/pause (1).png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_28">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="resetBtn">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="resetBtn">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -600,28 +592,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/undo-arrow.png</normaloff>icons/undo-arrow.png</iconset>
+                  <normaloff>../graph/icons/undo-arrow.png</normaloff>../graph/icons/undo-arrow.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_29">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="clearBtn">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="clearBtn">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -634,28 +619,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/clean.png</normaloff>icons/clean.png</iconset>
+                  <normaloff>../graph/icons/clean.png</normaloff>../graph/icons/clean.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_30">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="zoomInBtn">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="zoomInBtn">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -668,28 +646,27 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/zoom-in.png</normaloff>icons/zoom-in.png</iconset>
+                  <normaloff>../graph/icons/zoom-in.png</normaloff>../graph/icons/zoom-in.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_31">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="originalViewBtn">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="originalViewBtn">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -698,26 +675,13 @@ QScrollBar::right-arrow:horizontal {
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Return to the first view &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
-                 <string>Original View</string>
+                 <string>Reset zoom</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/outline_ssid_chart_black_24dp.png</normaloff>icons/outline_ssid_chart_black_24dp.png</iconset>
+                  <normaloff>../graph/icons/outline_ssid_chart_black_24dp.png</normaloff>../graph/icons/outline_ssid_chart_black_24dp.png</iconset>
                 </property>
                </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_62">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
               </item>
               <item>
                <widget class="QPushButton" name="zoomOutBtn">
@@ -730,9 +694,15 @@ QScrollBar::right-arrow:horizontal {
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>140</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -745,28 +715,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/zoom-out.png</normaloff>icons/zoom-out.png</iconset>
+                  <normaloff>../graph/icons/zoom-out.png</normaloff>../graph/icons/zoom-out.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_32">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="snapshotBtn">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="snapshotBtn">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -788,7 +751,7 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/screenshot (1).png</normaloff>icons/screenshot (1).png</iconset>
+                  <normaloff>../graph/icons/screenshot (1).png</normaloff>../graph/icons/screenshot (1).png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -847,6 +810,13 @@ QScrollBar::right-arrow:horizontal {
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
                   <widget class="QPushButton" name="speedDownBtn">
+                   <property name="font">
+                    <font>
+                     <pointsize>9</pointsize>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Speed down&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -858,7 +828,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/arrow (1).png</normaloff>icons/arrow (1).png</iconset>
+                     <normaloff>../graph/icons/arrow (1).png</normaloff>../graph/icons/arrow (1).png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -866,7 +836,7 @@ QScrollBar::right-arrow:horizontal {
                   <widget class="QPushButton" name="defaultSpeedBtn">
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -881,6 +851,13 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="speedUpBtn">
+                   <property name="font">
+                    <font>
+                     <pointsize>9</pointsize>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Speed Up&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -892,7 +869,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/right.png</normaloff>icons/right.png</iconset>
+                     <normaloff>../graph/icons/right.png</normaloff>../graph/icons/right.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -944,7 +921,7 @@ QScrollBar::right-arrow:horizontal {
                   <widget class="QPushButton" name="syncUnsyncSignalsBtn">
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -957,7 +934,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/sync.png</normaloff>icons/sync.png</iconset>
+                     <normaloff>../graph/icons/sync.png</normaloff>../graph/icons/sync.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1115,9 +1092,21 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="addTitleBtn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>115</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -1126,11 +1115,11 @@ QScrollBar::right-arrow:horizontal {
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;add signal title&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
-                    <string>OK</string>
+                    <string>Confirm</string>
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/check.png</normaloff>icons/check.png</iconset>
+                     <normaloff>../graph/icons/check.png</normaloff>../graph/icons/check.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1192,9 +1181,16 @@ QScrollBar::right-arrow:horizontal {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="colorComboBox">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;choose signal color&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <widget class="QPushButton" name="colorBtn">
+                   <property name="font">
+                    <font>
+                     <pointsize>9</pointsize>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Change</string>
                    </property>
                   </widget>
                  </item>
@@ -1243,6 +1239,19 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="moveDownBtn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>115</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Move to graph 2&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -1250,11 +1259,11 @@ QScrollBar::right-arrow:horizontal {
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>Move down</string>
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/curve-down-arrow.png</normaloff>icons/curve-down-arrow.png</iconset>
+                     <normaloff>../graph/icons/curve-down-arrow.png</normaloff>../graph/icons/curve-down-arrow.png</iconset>
                    </property>
                    <property name="autoDefault">
                     <bool>false</bool>
@@ -1312,9 +1321,15 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="showHideBtn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>115</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -1327,7 +1342,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/eye.png</normaloff>icons/eye.png</iconset>
+                     <normaloff>../graph/icons/eye.png</normaloff>../graph/icons/eye.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1346,9 +1361,15 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="deleteSignalBtn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>115</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -1361,7 +1382,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/delete.png</normaloff>icons/delete.png</iconset>
+                     <normaloff>../graph/icons/delete.png</normaloff>../graph/icons/delete.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1425,9 +1446,15 @@ QScrollBar::right-arrow:horizontal {
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="minimumSize">
+            <size>
+             <width>115</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>10</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -1440,7 +1467,7 @@ QScrollBar::right-arrow:horizontal {
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>icons/link.png</normaloff>icons/link.png</iconset>
+             <normaloff>../graph/icons/link.png</normaloff>../graph/icons/link.png</iconset>
            </property>
           </widget>
          </item>
@@ -1490,7 +1517,7 @@ QScrollBar::right-arrow:horizontal {
                </font>
               </property>
               <property name="title">
-               <string>Graph_2</string>
+               <string>Viewer 2</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
                <item>
@@ -1503,9 +1530,15 @@ QScrollBar::right-arrow:horizontal {
              <layout class="QHBoxLayout" name="horizontalLayout_48">
               <item>
                <widget class="QPushButton" name="addSignalBtn2">
+                <property name="minimumSize">
+                 <size>
+                  <width>140</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1515,28 +1548,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/plus.png</normaloff>icons/plus.png</iconset>
+                  <normaloff>../graph/icons/plus.png</normaloff>../graph/icons/plus.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_33">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="pausePlayBtn2">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pausePlayBtn2">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1549,28 +1575,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/pause (1).png</normaloff>icons/pause (1).png</iconset>
+                  <normaloff>../graph/icons/pause (1).png</normaloff>../graph/icons/pause (1).png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_34">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="resetBtn2">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="resetBtn2">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1583,28 +1602,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/undo-arrow.png</normaloff>icons/undo-arrow.png</iconset>
+                  <normaloff>../graph/icons/undo-arrow.png</normaloff>../graph/icons/undo-arrow.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_35">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="clearBtn2">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="clearBtn2">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1617,28 +1629,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/clean.png</normaloff>icons/clean.png</iconset>
+                  <normaloff>../graph/icons/clean.png</normaloff>../graph/icons/clean.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_36">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="zoomInBtn2">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="zoomInBtn2">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1651,28 +1656,27 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/zoom-in.png</normaloff>icons/zoom-in.png</iconset>
+                  <normaloff>../graph/icons/zoom-in.png</normaloff>../graph/icons/zoom-in.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_37">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="originalViewBtn2">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="originalViewBtn2">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1681,26 +1685,13 @@ QScrollBar::right-arrow:horizontal {
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Return to the first view &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
-                 <string>Original View</string>
+                 <string>Reset zoom</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/outline_ssid_chart_black_24dp.png</normaloff>icons/outline_ssid_chart_black_24dp.png</iconset>
+                  <normaloff>../graph/icons/outline_ssid_chart_black_24dp.png</normaloff>../graph/icons/outline_ssid_chart_black_24dp.png</iconset>
                 </property>
                </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_64">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
               </item>
               <item>
                <widget class="QPushButton" name="zoomOutBtn2">
@@ -1713,9 +1704,15 @@ QScrollBar::right-arrow:horizontal {
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>140</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1728,28 +1725,21 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/zoom-out.png</normaloff>icons/zoom-out.png</iconset>
+                  <normaloff>../graph/icons/zoom-out.png</normaloff>../graph/icons/zoom-out.png</iconset>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_38">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+               <widget class="QPushButton" name="snapshotBtn2">
+                <property name="minimumSize">
                  <size>
-                  <width>18</width>
-                  <height>20</height>
+                  <width>140</width>
+                  <height>0</height>
                  </size>
                 </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="snapshotBtn2">
                 <property name="font">
                  <font>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1771,7 +1761,7 @@ QScrollBar::right-arrow:horizontal {
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>icons/screenshot (1).png</normaloff>icons/screenshot (1).png</iconset>
+                  <normaloff>../graph/icons/screenshot (1).png</normaloff>../graph/icons/screenshot (1).png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -1830,6 +1820,13 @@ QScrollBar::right-arrow:horizontal {
                 <layout class="QHBoxLayout" name="horizontalLayout_7">
                  <item>
                   <widget class="QPushButton" name="speedDownBtn2">
+                   <property name="font">
+                    <font>
+                     <pointsize>9</pointsize>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Speed down&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -1841,7 +1838,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/arrow (1).png</normaloff>icons/arrow (1).png</iconset>
+                     <normaloff>../graph/icons/arrow (1).png</normaloff>../graph/icons/arrow (1).png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1849,7 +1846,7 @@ QScrollBar::right-arrow:horizontal {
                   <widget class="QPushButton" name="defaultSpeedBtn2">
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -1864,6 +1861,13 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="speedUpBtn2">
+                   <property name="font">
+                    <font>
+                     <pointsize>9</pointsize>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Speed Up&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -1875,7 +1879,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/right.png</normaloff>icons/right.png</iconset>
+                     <normaloff>../graph/icons/right.png</normaloff>../graph/icons/right.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1927,7 +1931,7 @@ QScrollBar::right-arrow:horizontal {
                   <widget class="QPushButton" name="syncUnsyncSignalsBtn2">
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -1940,7 +1944,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/sync.png</normaloff>icons/sync.png</iconset>
+                     <normaloff>../graph/icons/sync.png</normaloff>../graph/icons/sync.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -2098,9 +2102,15 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="addTitleBtn2">
+                   <property name="minimumSize">
+                    <size>
+                     <width>115</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -2109,11 +2119,11 @@ QScrollBar::right-arrow:horizontal {
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;add signal title&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
-                    <string>OK</string>
+                    <string>Confirm</string>
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/check.png</normaloff>icons/check.png</iconset>
+                     <normaloff>../graph/icons/check.png</normaloff>../graph/icons/check.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -2175,9 +2185,16 @@ QScrollBar::right-arrow:horizontal {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="colorComboBox2">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;choose signal color&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <widget class="QPushButton" name="colorBtn2">
+                   <property name="font">
+                    <font>
+                     <pointsize>9</pointsize>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Change</string>
                    </property>
                   </widget>
                  </item>
@@ -2226,6 +2243,19 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="moveUpBtn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>115</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Move to graph 1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -2233,11 +2263,11 @@ QScrollBar::right-arrow:horizontal {
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>Move up</string>
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/curved-up-arrow-.png</normaloff>icons/curved-up-arrow-.png</iconset>
+                     <normaloff>../graph/icons/curved-up-arrow-.png</normaloff>../graph/icons/curved-up-arrow-.png</iconset>
                    </property>
                    <property name="autoDefault">
                     <bool>false</bool>
@@ -2295,9 +2325,15 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="showHideBtn2">
+                   <property name="minimumSize">
+                    <size>
+                     <width>115</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -2310,7 +2346,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/eye.png</normaloff>icons/eye.png</iconset>
+                     <normaloff>../graph/icons/eye.png</normaloff>../graph/icons/eye.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -2329,9 +2365,15 @@ QScrollBar::right-arrow:horizontal {
                  </item>
                  <item>
                   <widget class="QPushButton" name="deleteSignalBtn2">
+                   <property name="minimumSize">
+                    <size>
+                     <width>115</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="font">
                     <font>
-                     <pointsize>9</pointsize>
+                     <pointsize>10</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -2344,7 +2386,7 @@ QScrollBar::right-arrow:horizontal {
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>icons/delete.png</normaloff>icons/delete.png</iconset>
+                     <normaloff>../graph/icons/delete.png</normaloff>../graph/icons/delete.png</iconset>
                    </property>
                   </widget>
                  </item>
